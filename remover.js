@@ -7,6 +7,7 @@ function removeElements(itensList, cardDiv) {
     const titleElement = cardDiv.querySelector('.title');
     if (itensList.includes(titleElement.innerText)) {
       container.appendChild(cardDiv); // Add the matched div to the container
+      console.log("REMOVER: Moving \"" + titleElement.innerText + "\" card to the bottom.");
     }
   });
 

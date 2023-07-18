@@ -1,5 +1,8 @@
 //Add Block button in all cards
+caller = 'INITIALIZER';
+
 addBlockButton();
+logThat(caller, 'Adding Block Buttons.');
 
 // Find all button elements on the page
 const buttons = document.querySelectorAll('button.block-button');
@@ -26,8 +29,14 @@ chrome.storage.local.get('savedItens', function(result)
     }
     else
     {
+        logThat(caller, 'Removing cards already in list:')
         const cardItens = document.querySelectorAll('.card-item');
         removeElements(itens, cardItens);
     }
-    console.log(itens);
+    newMessage = "Cards in block list: " + itens.length;
+    logThat(caller, newMessage);
 });
+
+function logThat(owner, message){
+    console.log('\n\n' + owner.toUpperCase() + ': ' + message + '\n\n');
+}

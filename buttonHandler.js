@@ -1,6 +1,6 @@
 // Function to handle button clicks
 function handleButtonClick(event) {
-  console.log(event.target.id);
+  logThat('BUTTON_HANDLER', 'Button Clicked.');
   appendName(event.target.id);
   const cardItens = document.querySelectorAll('.card-item');
   removeElements(event.target.id, cardItens);
@@ -11,15 +11,15 @@ function appendName(cardName) {
   chrome.storage.local.get('savedItens', function(result) 
   {
     var itens = result.savedItens;
-  
-    console.log("Adding new Card: " + cardName);
+    
+    newMessage = "Adding new Card to block-list: " + cardName
+    logThat('BUTTON_HANDLER', newMessage);
     itens.push(cardName);
-
-    console.log('Retrieved list:', itens);
 
     chrome.storage.local.set({ savedItens: itens }, function() 
     {
-      console.log('List saved locally.');
+      newMessage = 'List saved locally. There are ' + itens.length + ' cards in list.';
+      logThat('BUTTON_HANDLER', newMessage);
     });
   });
 }

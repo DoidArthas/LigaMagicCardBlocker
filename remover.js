@@ -1,5 +1,6 @@
 //Function to remove cards from page
-function removeElements(owner, itensList, cardDiv) {
+function removeElements(owner, itensList) {
+  const cardDiv = document.querySelectorAll('.card-item');
   const container = document.createElement('div'); // Create a container element
   container.style.display = 'flex'; // Set container's display property to flex
 

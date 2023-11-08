@@ -6,7 +6,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["remover.js", "blockButton.js", "buttonHandler.js", "logger.js", "init.js"]
+      "js": ["logger.js", "remover.js", "buttonHandler.js", "init.js"]
     }
   ]
 }

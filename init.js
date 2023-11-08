@@ -1,8 +1,7 @@
-//Add Block button in all cards
-caller = 'INITIALIZER';
+owner = 'INITIALIZER';
 
-addBlockButton();
-logThat(caller, 'Adding Block Buttons.');
+//Add Block button in all cards
+addBlockButton(owner);
 
 // Find all button elements on the page
 const buttons = document.querySelectorAll('button.block-button');
@@ -21,22 +20,19 @@ chrome.storage.local.get('savedItens', function(result)
     if (typeof itens === 'undefined')
     {
         itens = ['firstCardName'];
-        console.log("No list yet, creating it.");
+        logThat(owner, 'No list yet, creating it.', '', '');
         chrome.storage.local.set({ savedItens: itens }, function() 
         {
-            console.log('List saved locally.');
+            logThat(owner, 'List saved locally.', '', '');
         });
     }
     else
     {
-        logThat(caller, 'Removing cards already in list:')
         const cardItens = document.querySelectorAll('.card-item');
-        removeElements(itens, cardItens);
+        removeElements(owner, itens, cardItens);
     }
     newMessage = "Cards in block list: " + itens.length;
-    logThat(caller, newMessage);
+    logThat(owner, newMessage, '\n\n', '\n\n\n');
 });
 
-function logThat(owner, message){
-    console.log('\n\n' + owner.toUpperCase() + ': ' + message + '\n\n');
-}
+

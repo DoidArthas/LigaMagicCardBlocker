@@ -5,36 +5,8 @@
   "permissions": ["storage", "downloads", "unlimitedStorage"],
   "content_scripts": [
     {
-      "js": [
-        "remover.js"
-      ],
-      "matches": [
-        "https://*/*"
-      ]
-    },
-    {
-      "js": [
-        "blockButton.js"
-      ],
-      "matches": [
-        "https://*/*"
-      ]
-    },
-    {
-      "js": [
-        "buttonHandler.js"
-      ],
-      "matches": [
-        "https://*/*"
-      ]
-    },
-    {
-      "js": [
-        "init.js"
-      ],
-      "matches": [
-        "https://*/*"
-      ]
+      "matches": ["<all_urls>"],
+      "js": ["remover.js", "blockButton.js", "buttonHandler.js", "logger.js", "init.js"]
     }
   ]
 }

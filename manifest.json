@@ -2,7 +2,13 @@
   "manifest_version": 3,
   "name": "LigaMagic CardBlocker",
   "version": "1.0",
-  "permissions": ["storage", "downloads", "unlimitedStorage"],
+  "permissions": [
+    "storage", 
+    "downloads", 
+    "unlimitedStorage", 
+    "tabs",
+    "tabGroups"
+  ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

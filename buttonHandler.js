@@ -74,6 +74,20 @@ function handleSearchButtonClick(owner) {
 function handleBackupButtonClick(owner, event) {
   logThat('owner', 'Backup Button Clicked.', '', '');
 
+  const now = new Date();
+
+  backupName = ''; 
+  backupName = backupName.concat(
+    'LMCB-backup_',
+    now.getFullYear(), '-',
+    zeroAdd(now.getMonth()), '-',
+    zeroAdd(now.getDate()), '_',
+    zeroAdd(now.getHours()), '-',
+    zeroAdd(now.getMinutes()), '-',
+    zeroAdd(now.getSeconds()),
+    '.json'
+  )
+
   chrome.storage.local.get('savedItens', (result) => {
     const items = result.savedItens || [];
 
@@ -81,7 +95,7 @@ function handleBackupButtonClick(owner, event) {
 
     var vLink = document.createElement('a'),
     vBlob = new Blob([_myArray], {type: "octet/stream"}),
-    vName = 'watever_you_like_to_call_it.json',
+    vName = backupName,
     vUrl = window.URL.createObjectURL(vBlob);
     vLink.setAttribute('href', vUrl);
     vLink.setAttribute('download', vName );
@@ -159,4 +173,11 @@ function escapeHtml(text) {
   };
 
   return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+}
+
+function zeroAdd(value) {
+  if(value < 10){
+    value = `0${value}`;
+  }
+  return value;
 }

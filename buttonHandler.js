@@ -11,10 +11,22 @@ function addBlockButton(owner) {
       const aElement = divElement.querySelector('a');
       const linkText = escapeHtml(aElement.textContent);
       
-      div.innerHTML = `<div title="block"><button class="block-button" id="${linkText}">BLOCK</button></div>${div.innerHTML}`;
+      div.innerHTML = 
+        `<div style="display: flex; justify-content: space-between;">
+          <div title="block">
+            <button class="block-button" id="${linkText}">BLOCK</button>
+          </div>
+          <div title="search">
+            <button class="search-button" id="${linkText}">SEARCH</button>
+          </div>
+        </div>
+        ${div.innerHTML}`;
     
       const button = div.querySelector('.block-button');
       button.addEventListener('click', (event) => handleBlockButtonClick(owner, event));
+
+      const search = div.querySelector('.search-button');
+      search.addEventListener('click', (event) => handleSearchButtonClick(owner, event));
   });
   }
 }
@@ -52,6 +64,10 @@ function handleBlockButtonClick(owner, event) {
   logThat('owner', 'Block Button Clicked.', '', '');
   appendName(owner, event.target.id);
   removeElements(owner, event.target.id);
+}
+
+function handleSearchButtonClick(owner) {
+  return;
 }
 
 // Function to handle button clicks

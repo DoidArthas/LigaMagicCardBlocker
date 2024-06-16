@@ -133,6 +133,7 @@ function appendName(owner, cardName) {
 
 // Function to escape HTML entities
 function escapeHtml(text) {
+  text = text.trim();
   const map = {
     '&': '&amp;',
     '<': '&lt;',

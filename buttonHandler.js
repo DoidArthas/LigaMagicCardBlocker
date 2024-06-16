@@ -9,7 +9,7 @@ function addBlockButton(owner) {
     cardDivs.forEach(div => {
       const divElement = div.querySelector('.title');
       const aElement = divElement.querySelector('a');
-      const linkText = aElement.textContent;
+      const linkText = escapeHtml(aElement.textContent);
       
       div.innerHTML = `<div title="block"><button class="block-button" id="${linkText}">BLOCK</button></div>${div.innerHTML}`;
     
@@ -129,4 +129,17 @@ function appendName(owner, cardName) {
       logThat(owner, newMessage, '', '');
     });
   });
+}
+
+// Function to escape HTML entities
+function escapeHtml(text) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+
+  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 }

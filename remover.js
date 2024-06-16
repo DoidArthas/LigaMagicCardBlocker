@@ -9,7 +9,7 @@ function removeElements(owner, itensList) {
     const titleElement = cardDiv.querySelector('.title');
     if (itensList.includes(titleElement.innerText)) {
       container.appendChild(cardDiv); // Add the matched div to the container
-      logThat(owner, "REMOVER: Moving \"" + titleElement.innerText + "\" card to the bottom.", '', '');
+      logThat(owner, 'REMOVER: Moving \"' + titleElement.innerText + '\" card to the bottom.', '', '');
     }
   });
 

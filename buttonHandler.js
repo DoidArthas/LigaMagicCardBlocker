@@ -2,28 +2,48 @@ owner = "button_handler";
 
 function addBlockButton(owner) {
   const cardDivs = document.querySelectorAll('.card-desc');
+
   if (cardDivs.length) {
     logThat(owner, 'Adding Block Buttons.', '\n\n', '\n\n\n');
 
-    for (const div of cardDivs) {
+    cardDivs.forEach(div => {
       const divElement = div.querySelector('.title');
       const aElement = divElement.querySelector('a');
       const linkText = aElement.textContent;
+      
       div.innerHTML = `<div title="block"><button class="block-button" id="${linkText}">BLOCK</button></div>${div.innerHTML}`;
-    }
+    
+      const button = div.querySelector('.block-button');
+      button.addEventListener('click', (event) => handleBlockButtonClick(owner, event));
+  });
   }
+}
 
-  const container = document.querySelectorAll('.nav-category-filters.bg-dark-gray');
-  if (container.length) {
+function addBackupButtons(owner) {
+  const cardDivs = document.querySelectorAll('.nav-category-filters.bg-dark-gray');
+
+  if (cardDivs.length) {
     logThat(owner, 'Adding Backup Button.', '\n\n', '\n\n\n');
 
-    for (const div2 of container) {
-      //const divElement = div2.querySelector('.title');
-      //const aElement = divElement.querySelector('a');
-      //const linkText = aElement.textContent;
-      div2.innerHTML = `<div title="backup"><button class="backup-button" id="backup_button">BACKUP</button></div>${div2.innerHTML}`;
-      div2.innerHTML = `<div> <label for="file-input">Choose a JSON file to restore:</label><input type="file" id="file-input" accept=".json"><button class="restore-button" id="restore-button">RESTORE</button></div>${div2.innerHTML}`;
-    }
+    cardDivs.forEach(div => {
+      
+      div.innerHTML = 
+        `<div title="backup">
+          <button class="backup-button" id="backup_button">BACKUP</button>
+        </div>
+        <div>
+          <label for="file-input">Choose a JSON file to restore:</label>
+          <input type="file" id="file-input" accept=".json">
+          <button class="restore-button" id="restore_button">RESTORE</button>
+        </div>${div.innerHTML}`;
+
+
+      button = div.querySelector('.backup-button');
+      button.addEventListener('click', (event) => handleBackupButtonClick(owner, event));
+
+      button = div.querySelector('.restore-button');
+      button.addEventListener('click', (event) => handleRestoreButtonClick(owner, event));
+    });
   }
 }
 
@@ -110,21 +130,3 @@ function appendName(owner, cardName) {
     });
   });
 }
-
-
-//Add Block button in all cards
-addBlockButton(owner);
-
-// Find all button elements on the page
-// Attach the click event listener to each button
-document.querySelectorAll('button.block-button').forEach((button) => {
-  button.addEventListener('click', (event) => handleBlockButtonClick(owner, event));
-});
-
-document.querySelectorAll('button.backup-button').forEach((button) => {
-  button.addEventListener('click', (event) => handleBackupButtonClick(owner, event));
-});
-
-document.querySelectorAll('button.restore-button').forEach((button) => {
-  button.addEventListener('click', (event) => handleRestoreButtonClick(owner, event));
-});

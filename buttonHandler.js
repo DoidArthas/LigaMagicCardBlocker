@@ -14,6 +14,7 @@ function addBlockButton(owner) {
       div.innerHTML = 
         `<div style="display: flex; justify-content: space-between;">
           <div title="block">
+            <button class="block-button" id="${linkText}">BLOCK</button>
           </div>
           <div title="search">
             <button class="search-button" id="${linkText}">SEARCH</button>

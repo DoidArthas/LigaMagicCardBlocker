@@ -1,7 +1,8 @@
 owner = "button_handler";
 
 function addBlockButton(owner) {
-  const cardDivs = document.querySelectorAll('.card-desc');
+  const container = document.querySelector('.container');
+  const cardDivs = container.querySelectorAll('.card-desc');
 
   if (cardDivs.length) {
     logThat(owner, 'Adding Block Buttons.', '\n\n', '\n\n\n');
@@ -16,8 +17,19 @@ function addBlockButton(owner) {
           <div title="block">
             <button class="block-button" id="${linkText}">BLOCK</button>
           </div>
-          <div title="search">
-            <button class="search-button" id="${linkText}">SEARCH</button>
+
+          <div class="searchButtons">
+            <div title="search">
+              <button class="search-button_collection" id="${linkText}">COLLECTION</button>
+            </div>
+
+            <div title="search">
+              <button class="search-button_marketplace" id="${linkText}">MARKETPLACE</button>
+            </div>
+
+            <div title="search">
+              <button class="search-button_scryfall" id="${linkText}">SCRYFALL</button>
+            </div>
           </div>
         </div>
         ${div.innerHTML}`;
@@ -25,8 +37,17 @@ function addBlockButton(owner) {
       const button = div.querySelector('.block-button');
       button.addEventListener('click', (event) => handleBlockButtonClick(owner, event));
 
-      const search = div.querySelector('.search-button');
-      search.addEventListener('click', (event) => handleSearchButtonClick(owner, event));
+      const search_collection = div.querySelector('.search-button_collection');
+      search_collection.addEventListener
+        ('click', (event) => handleSearchButtonClick(owner, event, "collection"));
+
+      const search_market = div.querySelector('.search-button_marketplace');
+      search_market.addEventListener
+        ('click', (event) => handleSearchButtonClick(owner, event, "marketplace"));
+
+      const search_scryfall = div.querySelector('.search-button_scryfall');
+      search_scryfall.addEventListener
+        ('click', (event) => handleSearchButtonClick(owner, event, "scryfall"));
   });
   }
 }
@@ -79,9 +100,9 @@ function handleBlockButtonClick(owner, event) {
   removeElements(owner, event.target.id);
 }
 
-function handleSearchButtonClick(owner, event) {
+function handleSearchButtonClick(owner, event, buttonType) {
   cardName = event.target.id;
-  chrome.runtime.sendMessage({ action: ['searchCard', cardName]}, function(response) {
+  chrome.runtime.sendMessage({ action: ['searchCard', cardName, buttonType]}, function(response) {
     console.log('Message sent to background script');
   });
 }

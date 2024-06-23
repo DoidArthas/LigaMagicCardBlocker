@@ -79,8 +79,11 @@ function handleBlockButtonClick(owner, event) {
   removeElements(owner, event.target.id);
 }
 
-function handleSearchButtonClick(owner) {
-  return;
+function handleSearchButtonClick(owner, event) {
+  cardName = event.target.id;
+  chrome.runtime.sendMessage({ action: ['searchCard', cardName]}, function(response) {
+    console.log('Message sent to background script');
+  });
 }
 
 // Function to handle button clicks
@@ -160,7 +163,7 @@ function handleRestoreButtonClick(owner, event) {
 function handleShowCardsButtonClick(owner, event) {
   message = "Showing Blocked Cards";
 
-  
+
 
   logThat(owner, message);
 }

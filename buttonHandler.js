@@ -96,8 +96,10 @@ function addFunctionButtons(owner) {
 // Function to handle button clicks
 function handleBlockButtonClick(owner, event) {
   logThat('owner', 'Block Button Clicked.', '', '');
-  appendName(owner, event.target.id);
-  removeElements(owner, event.target.id);
+  cardName = normalizer(event.target.id.toLowerCase());
+
+  appendName(owner, cardName);
+  removeElements(owner, cardName);
 }
 
 function handleSearchButtonClick(owner, event, buttonType) {
@@ -160,13 +162,19 @@ function handleRestoreButtonClick(owner, event) {
   reader.onload = function(event) {
     try {
       const contents = event.target.result;
-      const parsedItems = JSON.parse(contents);
+      contentsLower = contents.toLowerCase();
+
+      contentsLower = normalizer(contentsLower);
+
+      const parsedItems = JSON.parse(contentsLower);
+
+      const uniqueItems = Array.from(new Set(parsedItems));
       
       // Now you can use parsedItems which should contain your array data
       // For example, you might want to store it back into chrome.storage.local
       
-      chrome.storage.local.set({ savedItens: parsedItems }, () => {
-        const newMessage = `List saved locally. There are ${parsedItems.length} cards in the list.`;
+      chrome.storage.local.set({ savedItens: uniqueItems }, () => {
+        const newMessage = `List saved locally. There are ${uniqueItems.length} cards in the list.`;
         logThat(owner, newMessage, '', '');
       });
 
@@ -225,4 +233,10 @@ function zeroAdd(value) {
     value = `0${value}`;
   }
   return value;
+}
+
+function normalizer(text) {
+  text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+  return text;
 }

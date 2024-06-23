@@ -31,23 +31,33 @@ function addBlockButton(owner) {
   }
 }
 
-function addBackupButtons(owner) {
+function addFunctionButtons(owner) {
+  //Div to hold function buttons, may change depending on each site;
   const cardDivs = document.querySelectorAll('.nav-category-filters.bg-dark-gray');
 
   if (cardDivs.length) {
-    logThat(owner, 'Adding Backup Button.', '\n\n', '\n\n\n');
+    logThat(owner, 'Adding Function Buttons.', '\n\n', '\n\n\n');
 
     cardDivs.forEach(div => {
       
       div.innerHTML = 
-        `<div title="backup">
+        `
+        <div title="backup">
           <button class="backup-button" id="backup_button">BACKUP</button>
         </div>
+
         <div>
           <label for="file-input">Choose a JSON file to restore:</label>
           <input type="file" id="file-input" accept=".json">
           <button class="restore-button" id="restore_button">RESTORE</button>
-        </div>${div.innerHTML}`;
+        </div>
+
+        <div title="showBlocked">
+          <button class="showCards-button" id="showCards_button">SHOW BLOCKED CARDS</button>
+        </div>
+
+        ${div.innerHTML}
+        `;
 
 
       button = div.querySelector('.backup-button');
@@ -55,6 +65,9 @@ function addBackupButtons(owner) {
 
       button = div.querySelector('.restore-button');
       button.addEventListener('click', (event) => handleRestoreButtonClick(owner, event));
+
+      button = div.querySelector('.showCards-button');
+      button.addEventListener('click', (event) => handleShowCardsButtonClick(owner, event));
     });
   }
 }
@@ -142,6 +155,14 @@ function handleRestoreButtonClick(owner, event) {
   };
 
   reader.readAsText(file);
+}
+
+function handleShowCardsButtonClick(owner, event) {
+  message = "Showing Blocked Cards";
+
+  
+
+  logThat(owner, message);
 }
 
 //Function to add cards to the block-list

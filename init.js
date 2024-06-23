@@ -5,4 +5,4 @@ pageLoaded(owner);
 
 //Add Block button in all cards displayed:
 addBlockButton(owner);
-addBackupButtons(owner);
+addFunctionButtons(owner);

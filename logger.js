@@ -1,11 +1,13 @@
-function logThat(owner, message, break1, break2){
-    const caller = arguments.callee.caller;
-    callerName = "unknown";
+function logThat(owner, message, break1 = '', break2 = '') {
+    let callerName = "unknown";
 
-    if (caller) {
-        // Access the name property of the calling function
-        if(caller.name){
-            callerName = caller.name;
+    // Instead of accessing caller, you can use Error().stack to get the call stack
+    const stack = new Error().stack;
+    if (stack) {
+        // Extract caller function name from stack trace
+        const callerLine = stack.split('\n')[2]; // Adjust index as needed
+        if (callerLine) {
+            callerName = callerLine.trim();
         }
     }
 

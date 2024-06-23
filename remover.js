@@ -7,7 +7,11 @@ function removeElements(owner, itensList) {
   logThat(owner, 'Removing cards already in list:', '\n\n', '\n\n\n');
   cardDiv.forEach((cardDiv) => {
     const titleElement = cardDiv.querySelector('.title').innerText.trim();
-    if (itensList.includes(titleElement)) {
+    const lowerTitle = titleElement.toLowerCase();
+
+    const normalizedTitle = normalizer(lowerTitle);
+
+    if (itensList.includes(normalizedTitle)) {
       container.appendChild(cardDiv); // Add the matched div to the container
       logThat(owner, 'REMOVER: Moving \"' + titleElement.innerText + '\" card to the bottom.', '', '');
     }

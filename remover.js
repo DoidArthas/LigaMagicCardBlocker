@@ -18,26 +18,34 @@ function removeElements(owner, itensList) {
 }
 
 function pageLoaded(owner) {
-  //If block-list don't exist, create it
-  //Then remove all cards in block-list from page
-  chrome.storage.local.get('savedItens', function(result) 
-  {
-      var itens = result.savedItens;
+  return new Promise((resolve, reject) => {
 
-      if (typeof itens === 'undefined')
-      {
-          itens = ['firstCardName'];
-          logThat(owner, 'No list yet, creating it.', '', '');
-          chrome.storage.local.set({ savedItens: itens }, function() 
-          {
-              logThat(owner, 'List saved locally.', '', '');
-          });
-      }
-      else
-      {
-          removeElements(owner, itens);
-      }
-      newMessage = "Cards in block list: " + itens.length;
-      logThat(owner, newMessage, '\n\n', '\n\n\n');
+    //If block-list don't exist, create it
+    //Then remove all cards in block-list from page
+    chrome.storage.local.get('savedItens', function(result) 
+    {
+        var itens = result.savedItens;
+
+        if (typeof itens === 'undefined')
+        {
+            itens = ['firstCardName'];
+            logThat(owner, 'No list yet, creating it.', '', '');
+            chrome.storage.local.set({ savedItens: itens }, function() 
+            {
+                logThat(owner, 'List saved locally.', '', '');
+            });
+        }
+        else
+        {
+            removeElements(owner, itens);
+        }
+        newMessage = "Cards in block list: " + itens.length;
+        logThat(owner, newMessage, '\n\n', '\n\n\n');
+    });
+    setTimeout(() => {
+        console.log('Page loaded for owner:', owner);
+        resolve(); // Resolve the promise when loading is completed
+    }, 300); // Simulating a delay
   });
+
 }

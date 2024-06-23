@@ -18,17 +18,17 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
                 });
             }
 
-            // Create first tab
-            createNewTab(`https://www.ligamagic.com.br/?view=colecao%2Fcolecao&vbuscar=${nameCard}`);
+            buttonType = message.action[2];
 
-            // Create second tab
-            createNewTab(`https://www.ligamagic.com.br/?view=cards%2Fsearch&card=${nameCard}`);
-
-            // Create third tab
-            createNewTab
-            (
-                `https://scryfall.com/search?as=grid&extras=true&lang=any&order=name&q=${nameCard}&unique=cards`
-            );
+            if(buttonType == "collection")
+                createNewTab(`https://www.ligamagic.com.br/?view=colecao%2Fcolecao&vbuscar=${nameCard}`);
+            else if(buttonType == "marketplace")
+                createNewTab(`https://www.ligamagic.com.br/?view=cards%2Fsearch&card=${nameCard}`);
+            else if(buttonType == "scryfall")
+                createNewTab
+                (
+                    `https://scryfall.com/search?as=grid&extras=true&lang=any&order=name&q=${nameCard}&unique=cards`
+                );
         });
     }
 

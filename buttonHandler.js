@@ -77,6 +77,12 @@ function addFunctionButtons(owner) {
           <button class="showCards-button" id="showCards_button">SHOW BLOCKED CARDS</button>
         </div>
 
+        <div>
+          <label for="file-input">Choose a CSV file to add:</label>
+          <input type="file" id="file-input" accept=".csv">
+          <button class="collection-button" id="collection_button">ADD COLLECTION</button>
+        </div>
+
         ${div.innerHTML}
         `;
 
@@ -96,7 +102,7 @@ function addFunctionButtons(owner) {
 // Function to handle button clicks
 function handleBlockButtonClick(owner, event) {
   logThat('owner', 'Block Button Clicked.', '', '');
-  cardName = normalizer(event.target.id.toLowerCase());
+  cardName = normalizer(event.target.id);
 
   appendName(owner, cardName);
   removeElements(owner, cardName);
@@ -162,9 +168,8 @@ function handleRestoreButtonClick(owner, event) {
   reader.onload = function(event) {
     try {
       const contents = event.target.result;
-      contentsLower = contents.toLowerCase();
 
-      contentsLower = normalizer(contentsLower);
+      contentsLower = normalizer(contents);
 
       const parsedItems = JSON.parse(contentsLower);
 
@@ -191,8 +196,6 @@ function handleRestoreButtonClick(owner, event) {
 
 function handleShowCardsButtonClick(owner, event) {
   message = "Showing Blocked Cards";
-
-
 
   logThat(owner, message);
 }

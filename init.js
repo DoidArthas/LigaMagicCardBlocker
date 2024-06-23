@@ -5,6 +5,4 @@ pageLoaded(owner).then(() => {
     addBlockButton(owner);
     addFunctionButtons(owner);
 
-}).catch(error => {
-    console.error('Error loading page:', error);
-});
+})

@@ -20,7 +20,8 @@
         "logger.js", 
         "remover.js", 
         "buttonHandler.js", 
-        "init.js"
+        "init.js",
+        "utils.js"
       ]
     }
   ],

@@ -2,7 +2,7 @@ owner = 'INITIALIZER';
 
 pageLoaded(owner).then(() => {
     // Add Block button in all cards displayed:
-    addBlockButton(owner);
+    addCardButtons(owner);
     addFunctionButtons(owner);
 
 }).catch(error => {

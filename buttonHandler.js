@@ -1,66 +1,75 @@
 owner = "button_handler";
 
-function addBlockButton(owner) {
-  const container = document.querySelector('.container');
-  const cardDivs = container.querySelectorAll('.card-desc');
+function addCardButtons(owner)
+{
+  const cardDivs = document.querySelector('.container').querySelectorAll('.card-desc');
 
-  if (cardDivs.length) {
+  if (cardDivs.length)
+  {
     logThat(owner, 'Adding Block Buttons.', '\n\n', '\n\n\n');
 
-    cardDivs.forEach(div => {
-      const divElement = div.querySelector('.title');
-      const aElement = divElement.querySelector('a');
-      const linkText = escapeHtml(aElement.textContent);
-      
-      div.innerHTML = 
-        `<div style="display: flex; justify-content: space-between;">
-          <div title="block">
-            <button class="block-button" id="${linkText}">BLOCK</button>
-          </div>
+    cardDivs.forEach
+    (
+      div =>
+      {
+          const divElement = div.querySelector('.title');
+          const aElement = divElement.querySelector('a');
+          const linkText = escapeHtml(aElement.textContent);
+          
+          div.innerHTML =
+            `
+            <div style="display: flex; justify-content: space-between;">
+              <div title="block">
+                <button class="block-button" id="${linkText}">BLOCK</button>
+              </div>
 
-          <div class="searchButtons">
-            <div title="search">
-              <button class="search-button_collection" id="${linkText}">COLLECTION</button>
+              <div class="searchButtons">
+                <div title="searchCollection">
+                  <button class="search-button_collection" id="${linkText}">COLLECTION</button>
+                </div>
+
+                <div title="searchMarketplace">
+                  <button class="search-button_marketplace" id="${linkText}">MARKETPLACE</button>
+                </div>
+
+                <div title="searchScryfall">
+                  <button class="search-button_scryfall" id="${linkText}">SCRYFALL</button>
+                </div>
+              </div>
             </div>
+            ${div.innerHTML}`;
+        
+          const block_button = div.querySelector('.block-button');
+          block_button.addEventListener
+            ('click', (event) => handleBlockButtonClick(owner, event));
 
-            <div title="search">
-              <button class="search-button_marketplace" id="${linkText}">MARKETPLACE</button>
-            </div>
+          const search_collection_button = div.querySelector('.search-button_collection');
+          search_collection_button.addEventListener
+            ('click', (event) => handleSearchButtonClick(owner, event, "collection"));
 
-            <div title="search">
-              <button class="search-button_scryfall" id="${linkText}">SCRYFALL</button>
-            </div>
-          </div>
-        </div>
-        ${div.innerHTML}`;
-    
-      const button = div.querySelector('.block-button');
-      button.addEventListener('click', (event) => handleBlockButtonClick(owner, event));
+          const search_market_button = div.querySelector('.search-button_marketplace');
+          search_market_button.addEventListener
+            ('click', (event) => handleSearchButtonClick(owner, event, "marketplace"));
 
-      const search_collection = div.querySelector('.search-button_collection');
-      search_collection.addEventListener
-        ('click', (event) => handleSearchButtonClick(owner, event, "collection"));
-
-      const search_market = div.querySelector('.search-button_marketplace');
-      search_market.addEventListener
-        ('click', (event) => handleSearchButtonClick(owner, event, "marketplace"));
-
-      const search_scryfall = div.querySelector('.search-button_scryfall');
-      search_scryfall.addEventListener
-        ('click', (event) => handleSearchButtonClick(owner, event, "scryfall"));
-  });
+          const search_scryfall_button = div.querySelector('.search-button_scryfall');
+          search_scryfall_button.addEventListener
+            ('click', (event) => handleSearchButtonClick(owner, event, "scryfall"));
+      }
+    );
   }
 }
 
-function addFunctionButtons(owner) {
+function addFunctionButtons(owner)
+{
   //Div to hold function buttons, may change depending on each site;
   const cardDivs = document.querySelectorAll('.nav-category-filters.bg-dark-gray');
 
-  if (cardDivs.length) {
+  if (cardDivs.length)
+  {
     logThat(owner, 'Adding Function Buttons.', '\n\n', '\n\n\n');
 
-    cardDivs.forEach(div => {
-      
+    cardDivs.forEach
+    (div =>{
       div.innerHTML = 
         `
         <div title="backup">
@@ -83,79 +92,68 @@ function addFunctionButtons(owner) {
           <button class="collection-button" id="collection_button">ADD COLLECTION</button>
         </div>
 
-        ${div.innerHTML}
-        `;
+        ${div.innerHTML}`;
 
+      backup_button = div.querySelector('.backup-button');
+      backup_button.addEventListener
+        ('click', (event) => handleBackupButtonClick(owner));
 
-      button = div.querySelector('.backup-button');
-      button.addEventListener('click', (event) => handleBackupButtonClick(owner, event));
+      restore_button = div.querySelector('.restore-button');
+      restore_button.addEventListener
+        ('click', (event) => handleRestoreButtonClick(owner));
 
-      button = div.querySelector('.restore-button');
-      button.addEventListener('click', (event) => handleRestoreButtonClick(owner, event));
+      show_button = div.querySelector('.showCards-button');
+      show_button.addEventListener
+        ('click', (event) => handleShowCardsButtonClick(owner, event));
 
-      button = div.querySelector('.showCards-button');
-      button.addEventListener('click', (event) => handleShowCardsButtonClick(owner, event));
-
-      button = div.querySelector('.collection-button');
-      button.addEventListener('click', (event) => handleCollectionButtonClick(owner, event));
+      collection_button = div.querySelector('.collection-button');
+      collection_button.addEventListener
+        ('click', (event) => handleCollectionButtonClick(owner));
     });
   }
 }
 
-// Function to handle button clicks
-function handleBlockButtonClick(owner, event) {
+function handleBlockButtonClick(owner, event)
+{
   logThat('owner', 'Block Button Clicked.', '', '');
-  cardName = normalizer(event.target.id);
+  const cardName = normalizer(event.target.id);
 
   appendName(owner, cardName);
   removeElements(owner, cardName);
 }
 
-function handleSearchButtonClick(owner, event, buttonType) {
+function handleSearchButtonClick(owner, event, buttonType)
+{
   cardName = event.target.id;
   chrome.runtime.sendMessage({ action: ['searchCard', cardName, buttonType]}, function(response) {
     console.log('Message sent to background script');
   });
 }
 
-// Function to handle button clicks
-function handleBackupButtonClick(owner, event) {
+function handleBackupButtonClick(owner) {
   logThat('owner', 'Backup Button Clicked.', '', '');
 
-  const now = new Date();
-
-  backupName = ''; 
-  backupName = backupName.concat(
-    'LMCB-backup_',
-    now.getFullYear(), '-',
-    zeroAdd(now.getMonth()), '-',
-    zeroAdd(now.getDate()), '_',
-    zeroAdd(now.getHours()), '-',
-    zeroAdd(now.getMinutes()), '-',
-    zeroAdd(now.getSeconds()),
-    '.json'
-  )
+  const nameBackup = backupName();
 
   chrome.storage.local.get('savedItens', (result) => {
     const items = result.savedItens || [];
 
-    var _myArray = JSON.stringify(items); //indentation in json format, human readable
+    var cards = JSON.stringify(items); //indentation in json format, human readable
 
     var vLink = document.createElement('a'),
-    vBlob = new Blob([_myArray], {type: "octet/stream"}),
-    vName = backupName,
+    vBlob = new Blob([cards], {type: "octet/stream"}),
+    vName = nameBackup,
     vUrl = window.URL.createObjectURL(vBlob);
     vLink.setAttribute('href', vUrl);
     vLink.setAttribute('download', vName );
     vLink.click();
 
     const newMessage = `Backuping`;
-    logThat(owner, newMessage, '', '');
+    logThat(owner, newMessage);
   });
 }
 
-// Function to handle button clicks
-function handleRestoreButtonClick(owner, event) {
+function handleRestoreButtonClick(owner) {
   logThat(owner, 'Restore Button Clicked.', '', '');
 
   const fileInput = document.getElementById('file-input');
@@ -168,26 +166,17 @@ function handleRestoreButtonClick(owner, event) {
 
   const reader = new FileReader();
 
-  reader.onload = function(event) {
+  reader.onload = function(loadEvent) {
     try {
-      const contents = event.target.result;
-
-      contentsLower = normalizer(contents);
-
-      const parsedItems = JSON.parse(contentsLower);
-
-      const uniqueItems = Array.from(new Set(parsedItems));
+      const contents = loadEvent.target.result;
+      const normalized = normalizer(contents);
+      const parsedItems = JSON.parse(normalized);
       
-      // Now you can use parsedItems which should contain your array data
-      // For example, you might want to store it back into chrome.storage.local
-      
-      chrome.storage.local.set({ savedItens: uniqueItems }, () => {
-        const newMessage = `List saved locally. There are ${uniqueItems.length} cards in the list.`;
-        logThat(owner, newMessage, '', '');
-      });
+      appendName(owner, parsedItems, false);
 
       const newMessage = `Restoring`;
       logThat(owner, newMessage, '', '');
+
     } catch (error) {
       console.error('Error restoring items:', error);
       alert('Error restoring items. Check console for details.');
@@ -203,7 +192,7 @@ function handleShowCardsButtonClick(owner, event) {
   logThat(owner, message);
 }
 
-function handleCollectionButtonClick(owner, event) {
+function handleCollectionButtonClick(owner) {
   const fileInput = document.getElementById('csv-input');
   const file = fileInput.files[0];
   
@@ -235,20 +224,7 @@ function handleCollectionButtonClick(owner, event) {
       }
     }
 
-    chrome.storage.local.get('savedItens', (result) => {
-      const items = result.savedItens || [];
-  
-      const newMessage = `Adding new Cards to block-list: ${cards}`;
-      logThat(owner, newMessage, '', '');
-  
-      const concatItems = items.concat(cards);
-      const uniqueItems = Array.from(new Set(concatItems));
-  
-      chrome.storage.local.set({ savedItens: uniqueItems }, () => {
-        const newMessage = `List saved locally. There are ${uniqueItems.length} cards in the list.`;
-        logThat(owner, newMessage, '', '');
-      });
-    });
+    appendName(owner, cards);
   };
   
   reader.onerror = function(event) {
@@ -256,82 +232,4 @@ function handleCollectionButtonClick(owner, event) {
   };
   
   reader.readAsText(file);
-}
-
-// Function to parse CSV data into an array of rows and handle quoted fields
-function parseCSV(csvData) {
-  const rows = [];
-  let currentRow = [];
-  let insideQuote = false;
-  let currentField = '';
-
-  for (let i = 0; i < csvData.length; i++) {
-    const char = csvData[i];
-
-    if (char === '"') {
-      insideQuote = !insideQuote;
-    } else if (char === ',' && !insideQuote) {
-      currentRow.push(currentField.trim());
-      currentField = '';
-    } else if (char === '\n' && !insideQuote) {
-      currentRow.push(currentField.trim());
-      rows.push(currentRow);
-      currentRow = [];
-      currentField = '';
-    } else {
-      currentField += char;
-    }
-  }
-
-  // Push the last field and row
-  currentRow.push(currentField.trim());
-  if (currentRow.length > 0) {
-    rows.push(currentRow);
-  }
-
-  return rows;
-}
-
-//Function to add cards to the block-list
-function appendName(owner, cardName) {
-  chrome.storage.local.get('savedItens', (result) => {
-    const items = result.savedItens || [];
-
-    const newMessage = `Adding new Card to block-list: ${cardName}`;
-    logThat(owner, newMessage, '', '');
-
-    items.push(cardName);
-
-    chrome.storage.local.set({ savedItens: items }, () => {
-      const newMessage = `List saved locally. There are ${items.length} cards in the list.`;
-      logThat(owner, newMessage, '', '');
-    });
-  });
-}
-
-// Function to escape HTML entities
-function escapeHtml(text) {
-  text = text.trim();
-  const map = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;'
-  };
-
-  return text.replace(/[&<>"']/g, function(m) { return map[m]; });
-}
-
-function zeroAdd(value) {
-  if(value < 10){
-    value = `0${value}`;
-  }
-  return value;
-}
-
-function normalizer(text) {
-  text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-  return text;
 }

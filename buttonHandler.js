@@ -79,7 +79,7 @@ function addFunctionButtons(owner) {
 
         <div>
           <label for="file-input">Choose a CSV file to add:</label>
-          <input type="file" id="file-input" accept=".csv">
+          <input type="file" id="csv-input" accept=".csv">
           <button class="collection-button" id="collection_button">ADD COLLECTION</button>
         </div>
 
@@ -95,6 +95,9 @@ function addFunctionButtons(owner) {
 
       button = div.querySelector('.showCards-button');
       button.addEventListener('click', (event) => handleShowCardsButtonClick(owner, event));
+
+      button = div.querySelector('.collection-button');
+      button.addEventListener('click', (event) => handleCollectionButtonClick(owner, event));
     });
   }
 }
@@ -198,6 +201,95 @@ function handleShowCardsButtonClick(owner, event) {
   message = "Showing Blocked Cards";
 
   logThat(owner, message);
+}
+
+function handleCollectionButtonClick(owner, event) {
+  const fileInput = document.getElementById('csv-input');
+  const file = fileInput.files[0];
+  
+  if (!file) {
+    console.error('No file selected.');
+    return;
+  }
+  
+  const reader = new FileReader();
+  
+  reader.onload = function(event) {
+    const csvData = event.target.result;
+    
+    // Split CSV into rows while considering quoted fields that may contain commas
+    const rows = parseCSV(csvData);
+    
+    const cards = [];
+    
+    for (let i = 1; i < rows.length; i++) { // Start from index 1 to skip header row
+      const columns = rows[i];
+      const cardPT = columns[3] ? columns[3].trim() : ''; // "Card (PT)" column
+      const cardEN = columns[4] ? columns[4].trim() : ''; // "Card (EN)" column
+      
+      // Choose "Card (PT)" if available, otherwise fallback to "Card (EN)"
+      const cardName = cardPT !== '' ? cardPT : cardEN;
+      
+      if (cardName !== '') {
+        cards.push(cardName);
+      }
+    }
+
+    chrome.storage.local.get('savedItens', (result) => {
+      const items = result.savedItens || [];
+  
+      const newMessage = `Adding new Cards to block-list: ${cards}`;
+      logThat(owner, newMessage, '', '');
+  
+      const concatItems = items.concat(cards);
+      const uniqueItems = Array.from(new Set(concatItems));
+  
+      chrome.storage.local.set({ savedItens: uniqueItems }, () => {
+        const newMessage = `List saved locally. There are ${uniqueItems.length} cards in the list.`;
+        logThat(owner, newMessage, '', '');
+      });
+    });
+  };
+  
+  reader.onerror = function(event) {
+    console.error('Error reading file:', event.target.error);
+  };
+  
+  reader.readAsText(file);
+}
+
+// Function to parse CSV data into an array of rows and handle quoted fields
+function parseCSV(csvData) {
+  const rows = [];
+  let currentRow = [];
+  let insideQuote = false;
+  let currentField = '';
+
+  for (let i = 0; i < csvData.length; i++) {
+    const char = csvData[i];
+
+    if (char === '"') {
+      insideQuote = !insideQuote;
+    } else if (char === ',' && !insideQuote) {
+      currentRow.push(currentField.trim());
+      currentField = '';
+    } else if (char === '\n' && !insideQuote) {
+      currentRow.push(currentField.trim());
+      rows.push(currentRow);
+      currentRow = [];
+      currentField = '';
+    } else {
+      currentField += char;
+    }
+  }
+
+  // Push the last field and row
+  currentRow.push(currentField.trim());
+  if (currentRow.length > 0) {
+    rows.push(currentRow);
+  }
+
+  return rows;
 }
 
 //Function to add cards to the block-list

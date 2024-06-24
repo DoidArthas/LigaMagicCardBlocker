@@ -5,4 +5,7 @@ pageLoaded(owner).then(() => {
     addBlockButton(owner);
     addFunctionButtons(owner);
 
-})
+}).catch(error => {
+    newMessage = "Not a marketplace search page";
+    logThat(owner, newMessage);    
+});

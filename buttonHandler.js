@@ -13,7 +13,7 @@ function addCardButtons(owner){
 
             div.innerHTML =
             `
-            <div style="display: flex; justify-content: space-between;">
+            <div style="display: flex; justify-content: space-between;" class="card-buttons">
                 <div title="block">
                     <button class="block-button" id="${linkText}">BLOCK</button>
                 </div>
@@ -177,8 +177,18 @@ function handleRestoreButtonClick(owner) {
 
 function handleShowCardsButtonClick(owner, event) {
     message = "Showing Blocked Cards";
-    
     logThat(owner, message);
+
+    const container = document.querySelector('.container');
+    const removedCards = document.querySelector('.removedCards');
+
+    const cards = document.querySelector('.cards');
+
+    cards.innerHTML =
+    `
+    ${removedCards.innerHTML}
+    ${cards.innerHTML}
+    `
 }
 
 function handleCollectionButtonClick(owner) {

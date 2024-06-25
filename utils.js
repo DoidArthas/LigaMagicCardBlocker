@@ -102,21 +102,3 @@ function normalizer(text) {
 
     return text;
 }
-
-function createNewContainer() {
-    // Assuming you have a source div with id "sourceDiv"
-    const container = document.querySelector('.cards');
-
-    // Create a new div element
-    const newContainer = document.createElement('div');
-    newContainer.className = 'removedCards';
-
-    // Get computed styles of sourceDiv
-    const computedStyles = window.getComputedStyle(container);
-
-    // Copy styles from computedStyles to targetDiv
-    for (let styleName of computedStyles) {
-    newContainer.style[styleName] = computedStyles[styleName];
-    }
-    document.body.appendChild(newContainer);
-}

@@ -189,6 +189,17 @@ function handleShowCardsButtonClick(owner, event) {
     ${removedCards.innerHTML}
     ${cards.innerHTML}
     `
+
+    const buttons = document.querySelectorAll('.remove-button');
+
+    if (buttons.length) {
+        buttons.forEach(div => {
+            const linkText = div.id;
+
+            div.addEventListener
+                ('click', (event) => handleRemoveButtonClick(owner, linkText));
+        });
+    }
 }
 
 function handleCollectionButtonClick(owner) {
@@ -229,4 +240,20 @@ function handleCollectionButtonClick(owner) {
     };
 
     reader.readAsText(file);
+}
+
+function handleRemoveButtonClick(owner, title) {
+    newMessage = `Removind \"${title}\" from block list.`;
+    logThat(owner, newMessage);
+
+    chrome.storage.local.get('savedItens', (result) => {
+        let items = result.savedItens || [];
+
+        items = items.filter(item => item !== title);
+        
+        chrome.storage.local.set({ savedItens: items }, () => {
+          const newMessage = `List saved locally. There are ${items.length} cards in the list.`;
+          logThat(owner, newMessage, '', '');
+        });
+    });
 }

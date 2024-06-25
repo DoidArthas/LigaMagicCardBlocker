@@ -23,14 +23,33 @@ function removeElements(owner, itensList) {
 
     if (itensList.includes(normalizedTitle)) {
       buttons = cardDiv.querySelector('.card-buttons');
-      if(buttons) buttons.innerHTML = ``;
+
+      if(buttons) {
+        buttons.innerHTML = 
+        `
+        <div title="block">
+          <button class="remove-button" id="${normalizedTitle}">REMOVE FROM BLOCK-LIST</button>
+        </div>
+        `
+      }
+      else {
+        cardDiv.innerHTML =
+        `
+        ${cardDiv.innerHTML}
+        <div title="block">
+          <button class="remove-button" id="${normalizedTitle}">REMOVE FROM BLOCK-LIST</button>
+        </div>
+        `;
+      }
+
+      const remove_button = cardDiv.querySelector('.remove-button');
+      remove_button.addEventListener
+        ('click', (event) => handleRemoveButtonClick(owner, normalizedTitle));
 
       container.appendChild(cardDiv); // Add the matched div to the container
       logThat(owner, 'REMOVER: Moving \"' + titleElement.innerText + '\" card to the bottom.', '', '');
     }
   });
-
-  
 }
 
 function pageLoaded(owner) {

@@ -256,4 +256,8 @@ function handleRemoveButtonClick(owner, title) {
           logThat(owner, newMessage, '', '');
         });
     });
+
+    const card = document.getElementById(title);
+
+    card.innerHTML = ``;
 }

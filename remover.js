@@ -50,5 +50,5 @@ function pageLoaded(owner) {
         resolve(); // Resolve the promise when loading is completed
     }, 300); // Simulating a delay
   });
-
+  
 }

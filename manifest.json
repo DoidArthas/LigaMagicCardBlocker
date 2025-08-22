@@ -2,31 +2,24 @@
   "manifest_version": 3,
   "name": "LigaMagic CardBlocker",
   "version": "1.0",
-  "permissions":
-  [
-    "storage", 
-    "downloads", 
-    "unlimitedStorage", 
+  "permissions": [
+    "storage",
+    "downloads",
     "tabs",
-    "tabGroups",
     "scripting"
   ],
-  "content_scripts":
-  [
+  "host_permissions": ["<all_urls>"],
+  "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js":
-      [
-        "logger.js", 
-        "remover.js", 
-        "buttonHandler.js", 
+      "include_globs": ["*?view=ecom*"],
+      "js": [
+        "logger.js",
+        "remover.js",
+        "buttonHandler.js",
         "init.js",
         "utils.js"
       ]
     }
-  ],
-  "background":
-  {
-    "service_worker": "background.js"
-  }
+  ]
 }

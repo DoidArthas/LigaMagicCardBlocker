@@ -113,10 +113,27 @@ function handleBlockButtonClick(owner, event) {
 }
 
 function handleSearchButtonClick(owner, event, buttonType) {
-    cardName = event.target.id;
-    chrome.runtime.sendMessage({ action: ['searchCard', cardName, buttonType]}, function(response) {
-        console.log('Message sent to background script');
-    });
+    const cardName = event.target.id;
+
+    let url = "";
+
+    if (buttonType === "collection") {
+        url = `https://www.ligamagic.com.br/?view=colecao%2Fcolecao&vbuscar=${encodeURIComponent(cardName)}`;
+    } else if (buttonType === "marketplace") {
+        url = `https://www.ligamagic.com.br/?view=cards%2Fsearch&card=${encodeURIComponent(cardName)}`;
+    } else if (buttonType === "scryfall") {
+        url = `https://scryfall.com/search?as=grid&extras=true&lang=any&order=name&q=${encodeURIComponent(cardName)}&unique=cards`;
+    }
+
+    // Abre a aba diretamente
+    if (chrome && chrome.tabs && chrome.tabs.create) {
+        chrome.tabs.create({ url: url });
+    } else {
+        // fallback caso chrome.tabs não esteja disponível
+        window.open(url, "_blank");
+    }
+
+    logThat(owner, `Opened ${buttonType} search for "${cardName}"`);
 }
 
 function handleBackupButtonClick(owner) {
@@ -260,4 +277,138 @@ function handleRemoveButtonClick(owner, title) {
     const card = document.getElementById(title);
 
     card.innerHTML = ``;
+}
+
+
+// Chame injectPagerBoost() no content script quando a página carregar.
+function personalizePage(owner) {
+  // Seleciona a tabela de paginação
+  const table = document.querySelector('table.ecomresp-tab');
+  if (!table) return;
+
+  // Localiza botões existentes
+  const links = Array.from(table.querySelectorAll('a.ecomresp-paginacao'));
+  const nextBtn = links.find(a => a.textContent.trim() === '>');
+  const currentLink = links.find(a => a.querySelector('b'));
+  if (!currentLink) return;
+
+  const currentPage = parseInt(currentLink.textContent.trim(), 10);
+  if (isNaN(currentPage)) return;
+
+  // Função para estilizar botões de paginação
+  function styleBtn(btn) {
+    Object.assign(btn.style, {
+      fontSize: '16px',
+      padding: '4px 10px',
+      margin: '0 3px',
+      border: '1px solid #999',
+      borderRadius: '5px',
+      backgroundColor: '#f8f8f8',
+      textDecoration: 'none',
+      color: '#000',
+      display: 'inline-block'
+    });
+    btn.addEventListener('mouseenter', () => btn.style.backgroundColor = '#e6e6e6');
+    btn.addEventListener('mouseleave', () => btn.style.backgroundColor = '#f8f8f8');
+  }
+
+  // Estiliza todos os botões já existentes
+  links.forEach(styleBtn);
+
+  // Adiciona botão "‹" antes do contador
+  if (currentPage > 1 && nextBtn) {
+    const u = new URL(nextBtn.href, location.href);
+    u.searchParams.set('page', String(currentPage - 1));
+    const prevHref = u.toString();
+
+    const prevBtn = document.createElement('a');
+    prevBtn.textContent = '‹';
+    prevBtn.href = prevHref;
+    prevBtn.className = 'ecomresp-paginacao';
+    styleBtn(prevBtn);
+
+    const firstCell = table.querySelector('td.textoMaior');
+    if (firstCell) {
+      firstCell.insertBefore(prevBtn, firstCell.firstChild);
+    }
+  }
+}
+
+function listarItensCarrinho() {
+  const cartBody = document.querySelector('.table-cart-body');
+  if (!cartBody) return;
+
+  const items = cartBody.querySelectorAll('.table-cart-row');
+  if (!items.length) return;
+
+  // Monta a lista
+  let listaTexto = "";
+  const ul = document.createElement('ul');
+  ul.style.listStyle = "disc";
+  ul.style.paddingLeft = "20px";
+  ul.style.margin = "10px 0";
+
+  items.forEach(item => {
+    const nomeEl = item.querySelector('.checkout-product--title a');
+    const qtdEl = item.querySelector('.checkout-product--qty');
+
+    if (nomeEl && qtdEl) {
+      const linha = `${qtdEl.value} ${nomeEl.textContent.trim()}`;
+      listaTexto += linha + "\n";
+
+      const li = document.createElement('li');
+      li.textContent = linha;
+      ul.appendChild(li);
+    }
+  });
+
+  // Cria bloco container para destacar
+  const box = document.createElement('div');
+  box.style.border = "1px solid #ccc";
+  box.style.padding = "12px";
+  box.style.marginBottom = "20px";
+  box.style.background = "#f9f9f9";
+  box.style.borderRadius = "6px";
+
+  const titulo = document.createElement('div');
+  titulo.textContent = "Itens no Carrinho:";
+  titulo.style.fontWeight = "bold";
+  titulo.style.marginBottom = "8px";
+
+  // Botão de copiar
+  const botaoCopiar = document.createElement('button');
+  botaoCopiar.textContent = "📋 Copiar Lista";
+  botaoCopiar.style.display = "block"; // ocupa linha inteira
+  botaoCopiar.style.width = "100%";    // ocupa largura total da caixinha
+  botaoCopiar.style.padding = "10px";
+  botaoCopiar.style.margin = "10px 0";
+  botaoCopiar.style.border = "1px solid #888";
+  botaoCopiar.style.background = "#e6e6e6";
+  botaoCopiar.style.cursor = "pointer";
+  botaoCopiar.style.borderRadius = "5px";
+  botaoCopiar.style.fontWeight = "bold";
+
+    botaoCopiar.onclick = (event) => {
+      event.stopPropagation(); // impede que o click borbulhe para o botão de comprar
+      event.preventDefault();  // previne comportamento padrão, se houver
+      navigator.clipboard.writeText(listaTexto).then(() => {
+        botaoCopiar.textContent = "✅ Copiado!";
+        setTimeout(() => botaoCopiar.textContent = "📋 Copiar Lista", 1500);
+      });
+    };
+
+  box.appendChild(titulo);
+  box.appendChild(botaoCopiar);
+  box.appendChild(ul);
+
+  // Insere acima da área de frete
+  const summaryCart = document.querySelector('.summary-cart');
+  if (summaryCart) {
+    const entregaTitle = summaryCart.querySelector('.title-cart');
+    if (entregaTitle) {
+      summaryCart.insertBefore(box, entregaTitle);
+    } else {
+      summaryCart.prepend(box);
+    }
+  }
 }

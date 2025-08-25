@@ -5,7 +5,7 @@ function handleBlockButtonClick(owner, event) {
     const cardName = normalizer(event.target.id);
 
     appendName(owner, cardName);
-    removeElements(owner, cardName);
+    removeElementsInterface(owner, cardName);
 }
 
 function handleSearchButtonClick(owner, event, buttonType) {

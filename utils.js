@@ -75,18 +75,19 @@ function appendName(owner, cards, append = true) {
     });
 }
 
-
-// Function to escape HTML entities
+// Função para escapar entidades HTML de forma segura
 function escapeHtml(text) {
+    if (typeof text !== 'string') return ''; // evita erro se text for null/undefined
+
     text = text.trim();
     const map = {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
         "'": '&#039;'
     };
-  
+
     return text.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
@@ -97,8 +98,25 @@ function zeroAdd(value) {
     return value;
 }
 
-function normalizer(text) {
-    text = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+function normalizer(titleElement) {
+    if (!titleElement) return '';
+
+    let text = typeof titleElement === 'string' ? titleElement : titleElement.textContent || '';
+    text = String(text).trim();
+    if (!text) return '';
+
+    // decodifica entidades HTML
+    const txt = document.createElement('textarea');
+    txt.innerHTML = text;
+    text = txt.value;
+
+    try {
+        text = text.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // remove acentos
+        text = text.replace(/\s+/g, ' ').toLowerCase();
+    } catch (err) {
+        console.warn('Normalizer falhou para:', text, err);
+    }
 
     return text;
 }
+

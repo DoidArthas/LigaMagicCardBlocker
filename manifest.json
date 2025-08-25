@@ -12,12 +12,19 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "include_globs": ["*?view=ecom*"],
+      "include_globs":  [
+                        "*?view=ecom*",
+                        "*ligamagic.com.br/?view=*"
+                        ],
       "js": [
         "logger.js",
-        "remover.js",
-        "buttonHandler.js",
-        "buttonCreator.js",
+        "removerInterface.js",
+        "srcLiga/remover.js",
+        "srcStores/removerLM.js",
+        "srcLiga/buttonHandler.js",
+        "srcLiga/buttonCreator.js",
+        "srcStores/buttonCreatorLM.js",
+        "buttonCreatorInterface.js",
         "init.js",
         "utils.js"
       ]

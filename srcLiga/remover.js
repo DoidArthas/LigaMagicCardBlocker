@@ -71,7 +71,7 @@ function pageLoaded(owner) {
         }
         else
         {
-            removeElements(owner, itens);
+            removeElementsInterface(owner, itens);
         }
         newMessage = "Cards in block list: " + itens.length;
         logThat(owner, newMessage, '\n\n', '\n\n\n');
@@ -81,5 +81,4 @@ function pageLoaded(owner) {
         resolve(); // Resolve the promise when loading is completed
     }, 300); // Simulating a delay
   });
-
 }
